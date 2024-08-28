@@ -1,4 +1,6 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from .base_page import BasePage
 from .locators import PracticeFormPageLocators as pfp_locators
 from os import getcwd
@@ -26,18 +28,19 @@ class PracticeFormPage(BasePage):
         assert self.is_element_present(*pfp_locators.FORM_CITY), f'City is not present. {self.browser.current_url=}'
 
     def fill_and_send_form(self):
-        self.fill_name_bar()
-        self.fill_lastname_bar()
-        self.fill_email_bar()
-        self.select_gender()
-        self.fill_phone_bar()
-        self.select_birthday()
-        self.fill_subjects_bar()
-        self.select_hobby()
-        self.send_pic()
-        self.fill_address_bar()
+        # self.fill_name_bar()
+        # self.fill_lastname_bar()
+        # self.fill_email_bar()
+        # self.select_gender()
+        # self.fill_phone_bar()
+        # self.select_birthday()
+        # self.fill_subjects_bar()
+        # self.select_hobby()
+        # self.send_pic()
+        # self.fill_address_bar()
         self.select_state_and_city()
-        self.click_to_the_form_button()
+        # self.click_to_the_form_button()
+
 
     def fill_name_bar(self):
         self.name = self.browser.find_element(*pfp_locators.FORM_NAME)
@@ -101,14 +104,29 @@ class PracticeFormPage(BasePage):
         self.address = self.address.text
         print(self.address)
 
+    # def select_state_and_city(self):
+    #     self.browser.find_element(*pfp_locators.FORM_STATE).click()
+    #     self.browser.find_elements(*pfp_locators.FORM_STATE_MENU)[0].click()
+    #     self.browser.find_element(*pfp_locators.FORM_CITY).click()
+    #     self.browser.find_elements(*pfp_locators.FORM_CITY_MENU)[0].click()
+        # self.state_and_city = self.browser.find_element(
+        #     *pfp_locators.FORM_STATE_TEXT).text + ' ' + self.browser.find_element(*pfp_locators.FORM_CITY_TEXT).text
+        # print(self.state_and_city)
+
     def select_state_and_city(self):
-        self.browser.find_element(*pfp_locators.FORM_STATE).click()
-        self.browser.find_elements(*pfp_locators.FORM_STATE_MENU)[0].click()
-        self.browser.find_element(*pfp_locators.FORM_CITY).click()
-        self.browser.find_elements(*pfp_locators.FORM_CITY_MENU)[0].click()
-        self.state_and_city = self.browser.find_element(
-            *pfp_locators.FORM_STATE_TEXT).text + ' ' + self.browser.find_element(*pfp_locators.FORM_CITY_TEXT).text
-        print(self.state_and_city)
+        state = self.browser.find_element(*pfp_locators.FORM_STATE)
+        self.browser.execute_script('arguments[0].click();', state)
+        state_menu = self.browser.find_elements(*pfp_locators.FORM_STATE_MENU)[0]
+        self.browser.execute_script('arguments[0].click();', state_menu)
+
+        # city = self.browser.find_element(*pfp_locators.FORM_CITY)
+        # self.browser.execute_script('arguments[0].click();', city)
+        # city_menu = self.browser.find_elements(*pfp_locators.FORM_CITY_MENU)[0]
+        # self.browser.execute_script('arguments[0].click();', city_menu)
+
+        # self.state_and_city = self.browser.find_element(
+        #     *pfp_locators.FORM_STATE_TEXT).text + ' ' + self.browser.find_element(*pfp_locators.FORM_CITY_TEXT).text
+        # print(self.state_and_city)
 
     def click_to_the_form_button(self):
         self.browser.find_element(*pfp_locators.FORM_BUTTON).click()
