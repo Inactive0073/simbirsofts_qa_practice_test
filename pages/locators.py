@@ -20,12 +20,12 @@ class PracticeFormPageLocators:
     FORM_ADDRESS = (By.ID, 'currentAddress')
     
     FORM_STATE = (By.XPATH, '//div[@id="state"]')
-    FORM_STATE_MENU = (By.XPATH, '//div[@id="state"]/div/div')
-    FORM_STATE_TEXT = (By.XPATH, '//div[@tabindex]')
+    FORM_STATE_MENU = (By.XPATH, '//div[@tabindex]')
+    FORM_STATE_TEXT = (By.XPATH, '//div[@id="state"]/div/div/div')
     
-    FORM_CITY = (By.XPATH, '//div[@id="stateCity-wrapper"]/div[3]')
-    FORM_CITY_MENU = (By.XPATH, '//div[@id="city"]/div/div')
-    FORM_CITY_TEXT = (By.XPATH, '//div[@tabindex]')
+    FORM_CITY = (By.XPATH, '//div[@id="city"]')
+    FORM_CITY_MENU = (By.XPATH, '//div[@tabindex]')
+    FORM_CITY_TEXT = (By.XPATH, '//div[@id="city"]/div/div/div')
     
     FORM_BUTTON = (By.CSS_SELECTOR, 'button#submit')
 
