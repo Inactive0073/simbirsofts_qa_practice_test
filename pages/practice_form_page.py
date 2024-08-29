@@ -1,3 +1,5 @@
+import time
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -92,6 +94,7 @@ class PracticeFormPage(BasePage):
     def fill_address_bar(self):
         self.address = 'Ulyanovsk, Minaeva st.'
         self.browser.find_element(*pfp_locators.FORM_ADDRESS).send_keys(self.address)
+        self.browser.execute_script('window.scrollTo(0,400);')
 
     def find_result_method(self, _locator):
         driver_methods = [EC.element_to_be_clickable, EC.presence_of_element_located, EC.visibility_of_element_located]
@@ -119,8 +122,9 @@ class PracticeFormPage(BasePage):
         return self.browser.find_element(By.ID, elem.get_attribute('for')).get_attribute('value')
 
     def should_be_success_msg(self):
-        assert self.browser.find_element(
-            *pfp_locators.FORM_POPUP_SUCCESS_MSG).text == 'Thanks for submitting the form', 'Success messsage not found'
+        popup_msg = self.browser.find_element(
+            *pfp_locators.FORM_POPUP_SUCCESS_MSG).text
+        assert  popup_msg == 'Thanks for submitting the form', f'Success messsage not found, {popup_msg=}'
 
     def result_strings_should_be_the_same(self):
         assert self.student_name == self.browser.find_element(
