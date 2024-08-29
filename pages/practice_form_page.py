@@ -1,10 +1,15 @@
+import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 from .base_page import BasePage
 from .locators import PracticeFormPageLocators as pfp_locators
 from os import getcwd
 
 
 class PracticeFormPage(BasePage):
+    
     def should_be_form_is_present(self):
         assert self.is_element_present(*pfp_locators.FORM_NAME), f'Name is not present. {self.browser.current_url=}'
         assert self.is_element_present(
@@ -39,37 +44,29 @@ class PracticeFormPage(BasePage):
         self.select_state_and_city()
         self.click_to_the_form_button()
 
+
     def fill_name_bar(self):
-        self.name = self.browser.find_element(*pfp_locators.FORM_NAME)
-        self.name.send_keys('Name')
-        self.name = self.name.text
-        print(self.name)
+        self.name = 'Name'
+        self.browser.find_element(*pfp_locators.FORM_NAME).send_keys(self.name)
 
     def fill_lastname_bar(self):
-        self.lastname = self.browser.find_element(*pfp_locators.FORM_LAST_NAME)
-        self.lastname.send_keys('Lastname')
-        self.lastname = self.lastname.text
-        self.student_name = self.name + self.lastname
-        print(self.student_name)
+        self.lastname = 'Lastname'
+        self.browser.find_element(*pfp_locators.FORM_LAST_NAME).send_keys(self.lastname)
+        self.student_name = f'{self.name} {self.lastname}'
 
     def fill_email_bar(self):
-        self.email = self.browser.find_element(*pfp_locators.FORM_EMAIL)
-        self.email.send_keys('email@email.com')
-        self.email = self.email.text
-        print(self.email)
+        self.email = 'email@email.com'
+        self.browser.find_element(*pfp_locators.FORM_EMAIL).send_keys(self.email)
 
     def select_gender(self):
         gender_elements = self.browser.find_elements(*pfp_locators.FORM_GENDER_LABEL)
         self.gender = gender_elements[0]
         self.gender.click()
         self.selected_gender = self.get_selected_into_input_text(self.gender)
-        print(self.selected_gender)
 
     def fill_phone_bar(self):
-        self.phone = self.browser.find_element(*pfp_locators.FORM_PHONE)
-        self.phone.send_keys('9991112233')
-        self.phone = self.phone.text
-        print(self.phone)
+        self.phone = '9991112233'
+        self.browser.find_element(*pfp_locators.FORM_PHONE).send_keys(self.phone)
 
     def select_birthday(self):
         self.date_bar = self.browser.find_element(*pfp_locators.FORM_DATE_BIRTHDAY)
@@ -77,8 +74,8 @@ class PracticeFormPage(BasePage):
         date_weeks = self.browser.find_elements(*pfp_locators.FORM_DATE_WEEKS)
         self.date = date_weeks[0].find_elements(*pfp_locators.FORM_DAYS)[0]
         self.date.click()
-        self.date_bar = self.date_bar.get_attribute('value')
-        print(self.date_bar)
+        day, month, year = self.date_bar.get_attribute('value').split()
+        self.date_bar = f'{day} {month},{year}'
 
     def fill_subjects_bar(self):
         self.browser.find_element(*pfp_locators.FORM_SUBJECTS).click()
@@ -88,39 +85,66 @@ class PracticeFormPage(BasePage):
     def select_hobby(self):
         self.hobby = self.browser.find_elements(*pfp_locators.FORM_HOBBIES_LABEL)[0]
         self.hobby.click()
-        self.hobby = self.get_selected_into_input_text(self.hobby)
-        print(self.hobby)
+        self.hobby = self.hobby.text
 
     def send_pic(self):
         self.pic_file = 'image.jpg'
         self.browser.find_element(*pfp_locators.FORM_PICTURE).send_keys(f'{getcwd()}/{self.pic_file}')
 
     def fill_address_bar(self):
-        self.address = self.browser.find_element(*pfp_locators.FORM_ADDRESS)
-        self.address.send_keys('Ulyanovsk, Minaeva st.')
-        self.address = self.address.text
-        print(self.address)
+        self.address = 'Ulyanovsk, Minaeva st.'
+        self.browser.find_element(*pfp_locators.FORM_ADDRESS).send_keys(self.address)
 
+    def find_result_method(self, _locator):
+        driver_methods = [EC.element_to_be_clickable, EC.presence_of_element_located, EC.visibility_of_element_located]
+        for method in driver_methods:
+            try:
+                WebDriverWait(self.browser, 7).until(method(_locator)).click()
+                print(f'Метод найден! {method=}')
+                time.sleep(1)
+            except (ElementClickInterceptedException, TimeoutException):
+                continue
+    
     def select_state_and_city(self):
-        self.browser.find_element(*pfp_locators.FORM_STATE).click()
-        self.browser.find_elements(*pfp_locators.FORM_STATE_MENU)[0].click()
-        self.browser.find_element(*pfp_locators.FORM_CITY).click()
-        self.browser.find_elements(*pfp_locators.FORM_CITY_MENU)[0].click()
+        self.find_result_method(pfp_locators.FORM_STATE)
+        self.find_result_method(pfp_locators.FORM_STATE_TEXT)
+        
+        self.find_result_method(pfp_locators.FORM_CITY)
+        self.find_result_method(pfp_locators.FORM_CITY_TEXT)
+        
+        
+        # self.browser.find_element(*pfp_locators.FORM_CITY).click()
+        # self.browser.find_elements(*pfp_locators.FORM_CITY_TEXT)[0].click()
+        
+        # # city = self.browser.find_element(*pfp_locators.FORM_CITY)
+        # # self.browser.execute_script('arguments[0].click();', city)
+        # # city_menu = self.browser.find_elements(*pfp_locators.FORM_CITY_MENU)[0]
+        # # self.browser.execute_script('arguments[0].click();', city_menu)
+
         self.state_and_city = self.browser.find_element(
             *pfp_locators.FORM_STATE_TEXT).text + ' ' + self.browser.find_element(*pfp_locators.FORM_CITY_TEXT).text
-        print(self.state_and_city)
+        print(f'{self.state_and_city=}')
 
     def click_to_the_form_button(self):
-        self.browser.find_element(*pfp_locators.FORM_BUTTON).click()
+        btn = self.browser.find_element(*pfp_locators.FORM_BUTTON)
+        self.browser.execute_script('arguments[0].click();', btn)
 
     def get_selected_into_input_text(self, elem):
         return self.browser.find_element(By.ID, elem.get_attribute('for')).get_attribute('value')
 
     def should_be_success_msg(self):
-        assert self.browser.find_element(*pfp_locators.FORM_POPUP_SUCCESS_MSG).text == 'Thanks for submitting the form'
+        assert self.browser.find_element(*pfp_locators.FORM_POPUP_SUCCESS_MSG).text == 'Thanks for submitting the form', 'Success messsage not found'
 
-    def bars_should_be_the_same(self):
-        # assert self.name =
-
-
-        pass
+    def result_strings_should_be_the_same(self):
+        assert self.student_name == self.browser.find_element(*pfp_locators.FORM_POPUP_STUDENT_NAME).text, f'Имена не совпадают{self.student_name=}'
+        assert self.email == self.browser.find_element(*pfp_locators.FORM_POPUP_EMAIL).text, f'Email не совпадают{self.email=}'
+        assert self.selected_gender == self.browser.find_element(*pfp_locators.FORM_POPUP_GENDER).text, f'Пол не совпадает{self.selected_gender=}'
+        assert self.phone == self.browser.find_element(*pfp_locators.FORM_POPUP_PHONE).text, f'Телефон не совпадает{self.phone=}'
+        day_month, year = self.browser.find_element(*pfp_locators.FORM_POPUP_DATE_BIRTHDAY).text.split(',')
+        popup_birthday = f'{day_month[:-1]},{year}'
+        assert self.date_bar == popup_birthday, f'Дата рождения не совпадает {self.date_bar=}'
+        assert self.hobby == self.browser.find_element(*pfp_locators.FORM_POPUP_HOBBIES).text, f'Хоббии не совпадают{self.hobby=}'
+        assert self.pic_file == self.browser.find_element(*pfp_locators.FORM_POPUP_PIC).text, f'Картинка не совпадает{self.pic_file=}'
+        assert self.address == self.browser.find_element(*pfp_locators.FORM_POPUP_ADDRESS).text, f'Адрес не совпадает{self.address=}'
+        popup_state_and_city = self.browser.find_element(*pfp_locators.FORM_POPUP_STATE_AND_CITY).text
+        assert self.state_and_city == popup_state_and_city, f'Штат и город не совпадает{self.state_and_city=}, {popup_state_and_city=}'

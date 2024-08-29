@@ -18,13 +18,16 @@ class PracticeFormPageLocators:
     FORM_HOBBIES_LABEL = (By.CSS_SELECTOR, 'input[type="checkbox"] + label')
     FORM_PICTURE = (By.ID, 'uploadPicture')
     FORM_ADDRESS = (By.ID, 'currentAddress')
-    FORM_STATE = (By.XPATH, '//div[@id="stateCity-wrapper"]/div[2]')
-    FORM_STATE_MENU = (By.XPATH, '//div[@id="state"]/div')
-    FORM_STATE_TEXT = (By.XPATH, '//div[@id="stateCity-wrapper"]/div[2]/div/div/div/div')
+    
+    FORM_STATE = (By.XPATH, '//div[@id="state"]')
+    FORM_STATE_MENU = (By.XPATH, '//div[@id="state"]/div/div')
+    FORM_STATE_TEXT = (By.XPATH, '//div[@tabindex]')
+    
     FORM_CITY = (By.XPATH, '//div[@id="stateCity-wrapper"]/div[3]')
-    FORM_CITY_MENU = (By.XPATH, '//div[@id="city"]/div')
-    FORM_CITY_TEXT = (By.XPATH, '//div[@id="stateCity-wrapper"]/div[3]/div/div/div/div')
-    FORM_BUTTON = (By.ID, 'submit')
+    FORM_CITY_MENU = (By.XPATH, '//div[@id="city"]/div/div')
+    FORM_CITY_TEXT = (By.XPATH, '//div[@tabindex]')
+    
+    FORM_BUTTON = (By.CSS_SELECTOR, 'button#submit')
 
     #SUCCESS_FIELDS
     FORM_POPUP_SUCCESS_MSG = (By.ID, 'example-modal-sizes-title-lg')

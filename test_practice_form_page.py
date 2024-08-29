@@ -7,3 +7,4 @@ def test_guest_can_to_send_form(browser):
     form_page.should_be_form_is_present()
     form_page.fill_and_send_form()
     form_page.should_be_success_msg()
+    form_page.result_strings_should_be_the_same()
